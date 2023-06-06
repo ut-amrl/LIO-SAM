@@ -1641,6 +1641,10 @@ public:
         laserOdometryROS.pose.pose.position.y = transformTobeMapped[4];
         laserOdometryROS.pose.pose.position.z = transformTobeMapped[5];
         laserOdometryROS.pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(transformTobeMapped[0], transformTobeMapped[1], transformTobeMapped[2]);
+
+        /* BEGIN MODIFICATIONS TO SAVE POSE TO FILE */
+
+        /* END MODIFICATIONS TO SAVE POSE TO FILE */
         pubLaserOdometryGlobal.publish(laserOdometryROS);
         
         // Publish TF

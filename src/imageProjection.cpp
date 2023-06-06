@@ -149,7 +149,7 @@ public:
     void imuHandler(const sensor_msgs::Imu::ConstPtr& imuMsg)
     {
         sensor_msgs::Imu thisImu = imuConverter(*imuMsg);
-
+        // std::cout << std::setprecision(12) << "imu stamp " <<thisImu.header.stamp.toSec() << '\n';
         std::lock_guard<std::mutex> lock1(imuLock);
         imuQueue.push_back(thisImu);
 
@@ -174,6 +174,8 @@ public:
     void odometryHandler(const nav_msgs::Odometry::ConstPtr& odometryMsg)
     {
         std::lock_guard<std::mutex> lock2(odoLock);
+        // nav_msgs::Odometry thisOdomMsg = odometryMsg;
+        // thisImu.header.stamp = ros::Time::now(); // Ouster lidar users may need to uncomment this line
         odomQueue.push_back(*odometryMsg);
     }
 
@@ -198,13 +200,17 @@ public:
     bool cachePointCloud(const sensor_msgs::PointCloud2ConstPtr& laserCloudMsg)
     {
         // cache point cloud
+        // sensor_msgs::PointCloud2 tempCloudMsg = sensor_msgs::PointCloud2(*laserCloudMsg);
+        // tempCloudMsg.header.stamp = ros::Time::now(); // Ouster lidar users may need to uncomment this line
         cloudQueue.push_back(*laserCloudMsg);
+        // std::cout << std::setprecision(12) << "cloud stamp " <<tempCloudMsg.header.stamp.toSec() << '\n';
 
         if (cloudQueue.size() <= 2)
             return false;
 
         // convert cloud
         currentCloudMsg = std::move(cloudQueue.front());
+        // currentCloudMsg.header.stamp = ros::Time::now(); // Ouster lidar users may need to uncomment this line
         cloudQueue.pop_front();
         if (sensor == SensorType::VELODYNE || sensor == SensorType::LIVOX)
         {
@@ -216,6 +222,7 @@ public:
             pcl::moveFromROSMsg(currentCloudMsg, *tmpOusterCloudIn);
             laserCloudIn->points.resize(tmpOusterCloudIn->size());
             laserCloudIn->is_dense = tmpOusterCloudIn->is_dense;
+    
             for (size_t i = 0; i < tmpOusterCloudIn->size(); i++)
             {
                 auto &src = tmpOusterCloudIn->points[i];
@@ -238,6 +245,7 @@ public:
 
         // get timestamp
         cloudHeader = currentCloudMsg.header;
+        
         timeScanCur = cloudHeader.stamp.toSec();
         // std::cout << " timescancur " << timeScanCur << '\n';
         timeScanEnd = timeScanCur + laserCloudIn->points.back().time;
