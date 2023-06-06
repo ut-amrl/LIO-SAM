@@ -181,23 +181,25 @@ public:
     {
         if (!cachePointCloud(laserCloudMsg))
             return;
-
+        // std::cout <<"cached pc \n";
         if (!deskewInfo())
             return;
-
+        // std::cout <<"deskewed pc \n";
         projectPointCloud();
-
+        // std::cout <<"Projected pc \n";
         cloudExtraction();
-
+        // std::cout <<"extracted pc \n";
         publishClouds();
-
+        // std::cout <<"Published pc \n";
         resetParameters();
+        // std::cout <<"Reset parameters \n";
     }
 
     bool cachePointCloud(const sensor_msgs::PointCloud2ConstPtr& laserCloudMsg)
     {
         // cache point cloud
         cloudQueue.push_back(*laserCloudMsg);
+
         if (cloudQueue.size() <= 2)
             return false;
 
@@ -224,6 +226,8 @@ public:
                 dst.intensity = src.intensity;
                 dst.ring = src.ring;
                 dst.time = src.t * 1e-9f;
+                // std::cout << "src t " << src.t << '\n';
+                // std::cout << "added time " << dst.time << '\n';
             }
         }
         else
@@ -235,7 +239,9 @@ public:
         // get timestamp
         cloudHeader = currentCloudMsg.header;
         timeScanCur = cloudHeader.stamp.toSec();
+        // std::cout << " timescancur " << timeScanCur << '\n';
         timeScanEnd = timeScanCur + laserCloudIn->points.back().time;
+        // std::cout << " last time " << laserCloudIn->points.back().time << '\n';
 
         // check dense flag
         if (laserCloudIn->is_dense == false)
@@ -279,7 +285,7 @@ public:
             if (deskewFlag == -1)
                 ROS_WARN("Point cloud timestamp not available, deskew function disabled, system will drift significantly!");
         }
-
+        // std::cout << "Finished cache pc \n";
         return true;
     }
 
@@ -289,6 +295,9 @@ public:
         std::lock_guard<std::mutex> lock2(odoLock);
 
         // make sure IMU data available for the scan
+        // std::cout << " Is imu queue empty ? " << imuQueue.empty() << '\n';
+        // std::cout << " Is imu ts front greater than ts cur? " << (imuQueue.front().header.stamp.toSec() > timeScanCur) << '\n';
+        // std::cout << " Is imu ts old older than ts end? " << (imuQueue.back().header.stamp.toSec() < timeScanEnd) << " scan end time " << timeScanEnd << '\n';
         if (imuQueue.empty() || imuQueue.front().header.stamp.toSec() > timeScanCur || imuQueue.back().header.stamp.toSec() < timeScanEnd)
         {
             ROS_DEBUG("Waiting for IMU data ...");
@@ -316,7 +325,7 @@ public:
 
         if (imuQueue.empty())
             return;
-
+        // std::cout << "imuQueue not empty\n";
         imuPointerCur = 0;
 
         for (int i = 0; i < (int)imuQueue.size(); ++i)
@@ -562,7 +571,7 @@ public:
             if (rangeMat.at<float>(rowIdn, columnIdn) != FLT_MAX)
                 continue;
 
-            thisPoint = deskewPoint(&thisPoint, laserCloudIn->points[i].time);
+            thisPoint = deskewPoint(&thisPoint, laserCloudIn->points[i].time); 
 
             rangeMat.at<float>(rowIdn, columnIdn) = range;
 

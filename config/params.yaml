@@ -3,9 +3,12 @@ lio_sam:
   # Topics
   pointCloudTopic: "points_raw"               # Point cloud data
   imuTopic: "imu_raw"                         # IMU data
+  #pointCloudTopic: "/ouster/points"           # Point cloud data - CODa
+  #imuTopic: "/vectornav/IMU"                  # IMU data         - CODa
   odomTopic: "odometry/imu"                   # IMU pre-preintegration odometry, same frequency as IMU
-  gpsTopic: "odometry/gpsz"                   # GPS odometry topic from navsat, see module_navsat.launch file
-
+  #gpsTopic: "odometry/gpsz"                   # GPS odometry topic from navsat, see module_navsat.launch file
+  gpsTopic: "odometry/gps"                    # GPS odometry topic from navsat, see module_navsat.launch file - To use GPS function
+  
   # Frames
   lidarFrame: "base_link"
   baselinkFrame: "base_link"
@@ -26,6 +29,10 @@ lio_sam:
   sensor: velodyne                            # lidar sensor type, 'velodyne' or 'ouster' or 'livox'
   N_SCAN: 16                                  # number of lidar channel (i.e., Velodyne/Ouster: 16, 32, 64, 128, Livox Horizon: 6)
   Horizon_SCAN: 1800                          # lidar horizontal resolution (Velodyne:1800, Ouster:512,1024,2048, Livox Horizon: 4000)
+  
+  #sensor: ouster                              # lidar sensor type, 'velodyne' or 'ouster' or 'livox'                                    - CODa
+  #N_SCAN: 128                                 # number of lidar channel (i.e., Velodyne/Ouster: 16, 32, 64, 128, Livox Horizon: 6)      - CODa
+  #Horizon_SCAN: 1024                          # lidar horizontal resolution (Velodyne:1800, Ouster:512,1024,2048, Livox Horizon: 4000)  - CODa
   downsampleRate: 1                           # default: 1. Downsample your data if too many points. i.e., 16 = 64 / 4, 16 = 16 / 1
   lidarMinRange: 1.0                          # default: 1.0, minimum lidar range to be used
   lidarMaxRange: 1000.0                       # default: 1000.0, maximum lidar range to be used
@@ -39,13 +46,21 @@ lio_sam:
   imuRPYWeight: 0.01
 
   # Extrinsics: T_lb (lidar -> imu)
-  extrinsicTrans: [0.0, 0.0, 0.0]
-  extrinsicRot: [-1, 0, 0,
-                  0, 1, 0,
-                  0, 0, -1]
-  extrinsicRPY: [0, -1, 0,
-                 1, 0, 0,
-                 0, 0, 1]
+  extrinsicTrans: [0.0313483, -0.00852594, -0.100549]
+  extrinsicRot: [0.999708, -0.999493 , -0.0237382,
+                  0.00385304 , -0.999493, -0.0316158,
+                  -0.0238717 , 0.0315151 , -0.999218]
+  extrinsicRPY: [-0.00385304 , 0.999493, 0.0316158,
+                  -0.999708, 0.999493 , 0.0237382,
+                  0.0238717 , -0.0315151 , 0.999218]
+
+  # extrinsicTrans: [0.0, 0.0, 0.0]
+  # extrinsicRot: [-1, 0, 0,
+  #                 0, 1, 0,
+  #                 0, 0, -1]
+  # extrinsicRPY: [0, -1, 0,
+  #                1, 0, 0,
+  #                0, 0, 1]
   # extrinsicRot: [1, 0, 0,
   #                 0, 1, 0,
   #                 0, 0, 1]
