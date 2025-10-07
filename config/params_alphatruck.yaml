@@ -1,0 +1,123 @@
+/**:
+  ros__parameters:
+
+    # ==============================
+    #  TOPIC CONFIGURATION
+    # ==============================
+
+    pointCloudTopic: "/livox/points"          # Livox LiDAR
+    imuTopic: "/vectornav/imu"               # VectorNav compensated IMU
+    odomTopic: "odometry/imu"                # internal odometry from preintegration
+    # gpsTopic: ""                             # <—— disable GNSS completely
+
+    # ==============================
+    #  FRAME CONFIGURATION
+    # ==============================
+
+    lidarFrame: "livox_frame"
+    baselinkFrame: "base_link"
+    odometryFrame: "odom"
+    mapFrame: "map"
+
+    # ==============================
+    #  GPS / FUSION SETTINGS (DISABLED)
+    # ==============================
+
+    useImuHeadingInitialization: false       # no yaw init from GNSS
+    useGpsElevation: false
+    gpsCovThreshold: 1e9                     # effectively disables GPS use
+    poseCovThreshold: 1e9
+
+    # ==============================
+    #  EXPORT SETTINGS
+    # ==============================
+
+    savePCD: false
+    savePCDDirectory: "/home/orin/Downloads/LOAM/"
+
+    # ==============================
+    #  SENSOR SETTINGS
+    # ==============================
+
+    sensor: livox                            # valid values: velodyne, ouster, livox
+    N_SCAN: 6                                # Livox Horizon = 6 beams
+    Horizon_SCAN: 4000                       # Livox Horizon horizontal points
+    downsampleRate: 1
+    lidarMinRange: 1.0
+    lidarMaxRange: 200.0
+
+    # ==============================
+    #  IMU SETTINGS (VectorNav VN-100)
+    # ==============================
+
+    imuAccNoise: 3.9939570888238808e-03
+    imuGyrNoise: 1.5636343949698187e-03
+    imuAccBiasN: 6.4356659353532566e-05
+    imuGyrBiasN: 3.5640318696367613e-05
+    imuGravity: 9.80511
+    imuRPYWeight: 0.01
+
+    # Extrinsic calibration (LiDAR→IMU)
+    extrinsicTrans:  [0.0, 0.0, 0.0]
+    extrinsicRot:    [1.0, 0.0, 0.0,
+                      0.0, 1.0, 0.0,
+                      0.0, 0.0, 1.0]
+    extrinsicRPY:    [1.0, 0.0, 0.0,
+                      0.0, 1.0, 0.0,
+                      0.0, 0.0, 1.0]
+
+    # ==============================
+    #  FEATURE EXTRACTION
+    # ==============================
+
+    edgeThreshold: 1.0
+    surfThreshold: 0.1
+    edgeFeatureMinValidNum: 10
+    surfFeatureMinValidNum: 100
+
+    # ==============================
+    #  VOXEL FILTER
+    # ==============================
+
+    odometrySurfLeafSize: 0.4
+    mappingCornerLeafSize: 0.2
+    mappingSurfLeafSize: 0.4
+
+    # ==============================
+    #  MOTION CONSTRAINT
+    # ==============================
+
+    z_tollerance: 1000.0
+    rotation_tollerance: 1000.0
+
+    # ==============================
+    #  MAPPING / OPTIMIZATION
+    # ==============================
+
+    numberOfCores: 4
+    mappingProcessInterval: 0.15
+
+    surroundingkeyframeAddingDistThreshold: 1.0
+    surroundingkeyframeAddingAngleThreshold: 0.2
+    surroundingKeyframeDensity: 2.0
+    surroundingKeyframeSearchRadius: 50.0
+
+    # ==============================
+    #  LOOP CLOSURE
+    # ==============================
+
+    loopClosureEnableFlag: true
+    loopClosureFrequency: 1.0
+    surroundingKeyframeSize: 50
+    historyKeyframeSearchRadius: 15.0
+    historyKeyframeSearchTimeDiff: 30.0
+    historyKeyframeSearchNum: 25
+    historyKeyframeFitnessScore: 0.3
+
+    # ==============================
+    #  VISUALIZATION
+    # ==============================
+
+    globalMapVisualizationSearchRadius: 1000.0
+    globalMapVisualizationPoseDensity: 10.0
+    globalMapVisualizationLeafSize: 1.0

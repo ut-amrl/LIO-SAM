@@ -91,6 +91,11 @@ install(
   DESTINATION lib/${PROJECT_NAME}
 )
 
+install(PROGRAMS
+  scripts/livox_to_lio_sam.py
+  DESTINATION lib/lio_sam
+)
+
 install(
   DIRECTORY "include/"
   DESTINATION include
